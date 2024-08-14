@@ -1,0 +1,166 @@
+<!doctype html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="shortcut icon" href="img/ae1a50d2700461fee3d5.ico" type="image/x-icon"><title>Webpack от METHED</title><script defer="defer" src="main.e2341306dc9fd0bbfb25.js"></script><link href="main.23ce2f8a7a04d1f1d535.css" rel="stylesheet"></head><body><div id="wrapper" class="wrapper"><header id="header" class="header"></header><main id="main" class="main"><section id="hero" class="hero"><div class="hero__container"><h1 class="hero__title title">Webpack от METHED</h1><div class="hero__box"><ol class="hero__list hero-list list"><li class="hero-list__item"><p><code>node -v</code> - версия node.js</p></li><li class="hero-list__item"><p><code>npm -v</code> - версия npm</p></li><li class="hero-list__item"><p><code>npm init -y</code> - чтобы не отвечать на все вопросы</p></li><li class="hero-list__item"><p><code>npm install webpack -D</code> - установка webpack для разработки</p></li><li class="hero-list__item"><p><code>npm install webpack-cli webpack-dev-server -D</code></p><p><b>cli</b> - нужен, чтобы webpack-ом управлять, писать различные команды.</p><p><b>webpack-dev-server</b> - нужен, чтобы запускать свой сервер, а не сторонние серверы.</p></li><li class="hero-list__item"><p>В файле package.json в "scripts" прописать скрипты:</p><p><code>"start": "set NODE_ENV=development&&webpack serve",</code> // запуск проекта и сервера</p><p><code>"build:dev": "set NODE_ENV=development&&webpack",</code> // собрать проект, но в режиме разработки</p><p><code>"build:prod": "set NODE_ENV=production&&webpack",</code> // сборка production</p><p><code>"clean": "rd /s /q dist"</code> // очищает папку dist от лишних файлов. rd - команда консоли и другие флаги, что всё работало и в тихом режиме</p></li><li class="hero-list__item"><p>7.1. Запуск сценарий NPM:</p><img src="img/click.jpg" alt=""><p>7.2. Внизу появляютя команды для запуска:</p><img src="img/click 2.jpg" alt=""></li><li class="hero-list__item"><p>В корневой папке проекта создаётся файл <b>webpack.config.js</b> в котором прописывается следующее:</p><p><pre>
+entry: path = require('path');
+
+const mode = process.env.NODE_ENV || 'development';
+<i>// process - переменная, которая содержит env</i>
+<i>// env - переменная окружения</i>
+<i>// NODE_ENV - переменная, которую создаёт разраб.</i>
+<i>// 'development' - если NODE_ENV не определена, то будет режим development</i>
+
+const devMode = mode === 'development';
+
+const target = devMode ? 'web' : 'browserslist';
+
+const devtool = devMode ? 'source-map' : undefined
+<i>// если режим разработки, то добавить source-map для удобства поиска ошибок, css-файлов</i>
+<i>// если режим продакшн, то undefined</i>
+
+module.exports = {
+  mode,
+  target,
+  devtool,
+  entry: path.resolve(__dirname, 'src', 'index.js'), <i>// путь по ступенькам к файлам проекта (__dirname - системная переменная, которая указывает полный путь до проекта)</i>
+  output: {
+    path: path.resolve(__dirname, 'dist'), <i>// путь куда всё складывается</i>
+    clean: true, <i>// для очищения папки dist</i>
+    filename: '[name].[contenthash].js',
+    <i>// [name] - имя по умолчанию</i>
+    <i>// .[contenthash] - для сборки разных имён</i>
+  }
+}
+                  </pre></p></li><li class="hero-list__item"><p>В корневой папке создаётся файл <b>.browserslistrc</b> и в нём прописываются свойства под разные браузеры:</p><p><code>last 2 versions</code> - для последних двух версий</p><p><code>not dead</code> - браузеры рабочие</p><p><code>&gt; 0.5%</code> - охват чего то больше 0.5%</p></li><li class="hero-list__item"><h3>HTML</h3><a href="https://webpack.js.org/plugins/html-webpack-plugin/" target="_blank">Источник</a><p>10.1. Установка плагина для HTML:</p><p><code>npm install --save-dev html-webpack-plugin</code></p><p>10.2. В webpack.config.js прописывается класс:</p><p><code>const HtmlWebpackPlugin = require('html-webpack-plugin');</code></p><p>10.3. Далее в плагинах вызывается:</p><p><code>plugins: [new HtmlWebpackPlugin()], // вызов плагин HTML</code></p><p>10.4. Установка плагина автоперезагрузки HTML-страницы:</p><p><code>npm install --save-dev html-loader</code></p><p>10.5. В webpack.config.js прописывается:</p><p><pre>
+module: {
+  // правило (массив)
+  rules: [
+    {
+      test: /\.html$/i, // i если HTML-файл написан большими буквами
+      loader: 'html-loader',
+    },
+  ]
+}
+                  </pre></p><p>В index.js в самом верху прописать для слежки за изменениями:</p><p><code>import './index.html';</code></p></li><li class="hero-list__item"><p>11.1. Установка плагина стилей</p><p><code>npm install --save-dev style-loader</code></p><a href="https://webpack.js.org/loaders/style-loader/" target="_blank">style-loader</a><br><a href="https://webpack.js.org/loaders/css-loader/" target="_blank">CSS</a><br><a href="https://webpack.js.org/loaders/sass-loader/" target="_blank">SASS</a><br><a href="https://webpack.js.org/loaders/postcss-loader/" target="_blank">Autoprefix</a><br><p>11.2. Установка плагинов стилей, CSS, SASS и автопрефиксов:</p><p><code>npm install --save-dev style-loader</code></p><p><code>npm install --save-dev css-loader</code></p><p><code>npm install sass-loader sass -D</code></p><p><code>npm install --save-dev postcss-loader postcss postcss-preset-env</code></p><p>11.3. Установка плагина, чтобы стили были отдельным файлом:</p><p><code>npm install --save-dev mini-css-extract-plugin</code></p><p>11.4. В webpack.config.js прописываются:</p><p><code>const MiniCssExtractPlugin = require("mini-css-extract-plugin");</code></p><p><pre>
+plugins: [
+  new MiniCssExtractPlugin({
+    filename: '[name].[contenthash].css',
+  }),
+],
+                  </pre></p><p><pre>
+module: {
+  <i>// правило (массив)</i>
+  rules: [
+    {
+      test: /\.(c|sa|sc)ss$/i,
+      devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+      "css-loader",
+      'sass-loader',
+    },
+  ]
+}
+                  </pre></p><p>11.5. В index.js</p><p><code>import './index.scss';</code></p></li><li class="hero-list__item"><h3>Сервер</h3><p>В webpack.config.js прописывается:</p><p><pre>
+devServer: {
+  port: 8080,
+  open: true,
+  hot: true, <i>// горячая перезагрузка стилей. Если будет глючить, тогда отключить</i>
+},
+                  </pre></p></li><li class="hero-list__item"><h3>JavaScript</h3><a href="https://webpack.js.org/loaders/babel-loader/" target="_blank">Источник</a><br><a href="https://babeljs.io/docs/babel-polyfill" target="_blank">Полифил babel</a><p>Установка плагина babel-loader для поддержки различными браузерами:</p><p><code>npm install -D babel-loader @babel/core @babel/preset-env</code></p><p>В webpack.config.js прописывается:</p><p><code>entry: ["@babel/polyfill", path.resolve(__dirname, 'src', 'index.js')],</code> <i>// "@babel/polyfill" дописывается для загрузки полифила</i></p><p><pre>
+module: {
+  rules: [      
+    {
+      test: /\.(?:js|mjs|cjs)$/i,
+      exclude: /node_modules/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            ['@babel/preset-env', { targets: "defaults" }]
+          ]
+        }
+      }
+    },
+  ]
+}
+                  </pre></p></li><li class="hero-list__item"><h3>Шрифты</h3><p>В webpack.config.js прописывается:</p><p><pre>
+module: {
+  rules: [
+    {
+      test: /\.woff2?$/i, <i>// 2?f - двойка может быть, а может не быть в формате шрифта</i>
+      type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext]', <i>// [name][ext] - имя и расширение файла</i>
+        }
+    },
+  ]
+}
+                  </pre></p></li><li class="hero-list__item"><h3>Image</h3><p>В webpack.config.js:</p><p><pre>
+output: {
+  path: path.resolve(__dirname, 'dist'), <i>// путь куда всё складывается</i>
+  clean: true, <i>// для очищения папки dist</i>
+  filename: '[name].[contenthash].js',
+  <i>// [name] - имя по умолчанию</i>
+  <i>// .[contenthash] - для сборки разных имён</i>
+  assetModuleFilename: 'img/[hash][ext]', <i>// название картинок. Можно [name] или [hash] - произвольное имя</i>
+},
+                  </pre></p><p>В index.js прописать:</p><p><pre>
+import marek from './img/image.jpg'
+
+const img = new Image();
+img.src = marek;
+                  </pre></p><p>В webpack.config.js:</p><p><pre>
+module: {
+  rules: [
+    {
+      test: /\.(jpe?g|png|webp|gif|svg)$/i,
+      type: 'asset/resource',
+      generator: {
+        filename: 'img/[name][ext]', <i>// [name][ext] - имя и расширение файла</i>
+      }
+    },
+  ]
+}
+                  </pre></p><p>В HTML:</p><p><code>&lt;section id="img" class="img"&gt;&lt;/section&gt;</code></p><p>В JS:</p><p><pre>
+import marek from './img/image.jpg'
+
+const img = new Image();
+img.src = marek;
+img.width = 1920;
+
+const imgWrap = document.getElementById("img");
+imgWrap.appendChild(img); <i>// И картинка загружается в HTML-тег img</i>
+                  </pre></p></li><li class="hero-list__item"><h3>Сжатие изображений</h3><a href="https://www.npmjs.com/package/image-webpack-loader" target="_blank">Источник</a><p>Установка плагина:</p><p><code>npm install image-webpack-loader --save-dev</code></p><p>В webpack.config.js:</p><p><pre>
+module: {
+  rules: [
+    {
+      test: /\.(jpe?g|png|webp|gif|svg)$/i,
+      use: [
+        {
+          loader: 'image-webpack-loader',
+          options: {
+            mozjpeg: {
+              progressive: true,
+            },
+            <i>// optipng.enabled: false will disable optipng</i>
+            optipng: {
+              enabled: false,
+            },
+            pngquant: {
+              quality: [0.65, 0.90],
+              speed: 4
+            },
+            gifsicle: {
+              interlaced: false,
+            },
+            <i>// the webp option will enable WEBP</i>
+            webp: {
+              quality: 75
+            }
+          }
+        }
+      ],
+      type: 'asset/resource',
+      generator: {
+        filename: 'img/[name][ext]', // [name][ext] - имя и расширение файла
+      }
+    },
+  ]
+}
+                  </pre></p></li><li class="hero-list__item"><p><code></code></p></li></ol></div></div></section><section id="image" class="image"></section><section id="img" class="img"></section></main></div></body></html>
